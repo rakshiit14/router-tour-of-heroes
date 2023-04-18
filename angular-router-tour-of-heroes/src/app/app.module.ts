@@ -7,18 +7,25 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
 import { AppRoutingModule } from './app-routing.module';
 import { HeroesModule } from './heroes/heroes.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { CrisisCenterModule } from './crisis-center/crises.module';
+import { ComposeMessageComponent } from './compose-message/compose-message/compose-message.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
     AppComponent,
     CrisisListComponent,
     PageNotFoundComponent,
+    ComposeMessageComponent,
   ],
   imports: [
     BrowserModule,
     HeroesModule,
+    CrisisCenterModule,
     AppRoutingModule,
     BrowserAnimationsModule,
+    FormsModule,
+    
   ],
   providers: [],
   bootstrap: [AppComponent]
