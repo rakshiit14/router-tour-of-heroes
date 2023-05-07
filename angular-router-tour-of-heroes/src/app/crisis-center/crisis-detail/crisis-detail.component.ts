@@ -3,6 +3,7 @@ import { Crisis } from '../crisis';
 import { Router, ActivatedRoute, ParamMap} from '@angular/router';
 import { Observable, switchMap } from 'rxjs';
 import { CrisisService } from '../crisis.service';
+import { DialogService } from 'src/app/dialog.service';
 
 @Component({
   selector: 'app-crisis-detail',
@@ -10,21 +11,40 @@ import { CrisisService } from '../crisis.service';
   styleUrls: ['./crisis-detail.component.css'],
 })
 export class CrisisDetailComponent implements OnInit {
-  crisis$!: Observable<Crisis>;
+  crisis!: Crisis;
+  editName = '';
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private service: CrisisService,
+    public dialogService: DialogService,
   ){}
   ngOnInit(): void {
-    this.crisis$ = this.route.paramMap.pipe(
-      switchMap((params: ParamMap)=> 
-      this.service.getHero(params.get('id')!)
-      )
-    );
+    this.route.data
+    .subscribe(data => {
+      const crisis: Crisis = data['crisis'];
+      this.editName = crisis.name;
+      this.crisis = crisis;
+    });
   }
-  gotoCrises(crisis:Crisis){
-    const crisisId = crisis ? crisis.id : null;
+  gotoCrises(){
+    const crisisId = this.crisis ? this.crisis.id : null;
     this.router.navigate(['/crises', {id: crisisId}],{relativeTo: this.route});
+  }
+  cancel() {
+    this.gotoCrises();
+  }
+  
+  save() {
+    this.crisis.name = this.editName;
+    this.gotoCrises();
+  }
+  canDeactivate(): Observable<boolean> | boolean {
+    // Allow synchronous navigation (`true`) if no crisis or the crisis is unchanged
+    if (!this.crisis || this.crisis.name === this.editName) {
+      return true;
+    }
+    // Otherwise ask the user with the dialog service and return its
+    // observable which resolves to true or false when the user decides
+    return this.dialogService.confirm('Discard changes?');
   }
 }

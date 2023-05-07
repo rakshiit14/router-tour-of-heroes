@@ -12,13 +12,13 @@ export class CrisisService {
 
   constructor(private messageService: MessageService) { }
 
-  getHeroes(): Observable<Crisis[]> {
+  getCrises(): Observable<Crisis[]> {
     const crises = of(CRISES);
     this.messageService.add('HeroService: fetched crises');
     return crises;
   }
   getHero(id: number | string) {
-    return this.getHeroes().pipe(
+    return this.getCrises().pipe(
       // (+) before `id` turns the string into a number
       map((crises: Crisis[]) => crises.find(crisis => crisis.id === +id)!)
     );
